@@ -62,12 +62,14 @@ func Open(cfg *config.Config) (*Ledis, error) {
 	l := new(Ledis)
 	l.cfg = cfg
 
+	// 文件锁
 	if l.lock, err = filelock.Lock(path.Join(cfg.DataDir, "LOCK")); err != nil {
 		return nil, err
 	}
 
 	l.quit = make(chan struct{})
 
+	// 打开底层存储
 	if l.ldb, err = store.Open(cfg); err != nil {
 		return nil, err
 	}

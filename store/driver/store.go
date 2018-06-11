@@ -20,7 +20,7 @@ func Register(s Store) {
 		panic(fmt.Errorf("store %s is registered", s))
 	}
 
-	dbs[name] = s
+	dbs[name] = s // 通过名字来注册存储驱动，返回的是一个接口 Store{}
 }
 
 func ListStores() []string {
@@ -37,7 +37,7 @@ func GetStore(cfg *config.Config) (Store, error) {
 		cfg.DBName = config.DefaultDBName
 	}
 
-	s, ok := dbs[cfg.DBName]
+	s, ok := dbs[cfg.DBName] // 通过名字来获取已经注册的存储驱动
 	if !ok {
 		return nil, fmt.Errorf("store %s is not registered", cfg.DBName)
 	}

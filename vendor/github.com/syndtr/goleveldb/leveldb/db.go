@@ -33,9 +33,9 @@ type DB struct {
 	seq uint64
 
 	// Session.
-	s *session
+	s *session // 代表一个持久型数据库的会话
 
-	// MemDB.
+	// MemDB. 内存数据库
 	memMu           sync.RWMutex
 	memPool         chan *memdb.DB
 	mem, frozenMem  *memDB
@@ -201,6 +201,7 @@ func Open(stor storage.Storage, o *opt.Options) (db *DB, err error) {
 // Also, if ErrorIfExist is true and the DB exist OpenFile will returns
 // os.ErrExist error.
 //
+// 使用标准的文件系统备份存储实现
 // OpenFile uses standard file-system backed storage implementation as
 // desribed in the leveldb/storage package.
 //
@@ -210,6 +211,7 @@ func Open(stor storage.Storage, o *opt.Options) (db *DB, err error) {
 //
 // The returned DB instance is goroutine-safe.
 // The DB must be closed after use, by calling Close method.
+// 返回一个DB
 func OpenFile(path string, o *opt.Options) (db *DB, err error) {
 	stor, err := storage.OpenFile(path, o.GetReadOnly())
 	if err != nil {

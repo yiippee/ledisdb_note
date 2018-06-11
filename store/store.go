@@ -22,7 +22,7 @@ func getStorePath(cfg *config.Config) string {
 }
 
 func Open(cfg *config.Config) (*DB, error) {
-	s, err := driver.GetStore(cfg)
+	s, err := driver.GetStore(cfg) // 获取一个存储驱动，与sql类似，通过注册的形式来获取
 	if err != nil {
 		return nil, err
 	}

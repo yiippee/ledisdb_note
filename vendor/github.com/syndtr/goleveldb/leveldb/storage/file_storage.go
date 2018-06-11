@@ -78,6 +78,7 @@ func OpenFile(path string, readOnly bool) (Storage, error) {
 		return nil, err
 	}
 
+	// 使用了文件锁，所以后面再来打开这个相同的路径都会失败
 	flock, err := newFileLock(filepath.Join(path, "LOCK"), readOnly)
 	if err != nil {
 		return nil, err

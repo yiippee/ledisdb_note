@@ -194,11 +194,13 @@ func (db *DB) NewSnapshot() (driver.ISnapshot, error) {
 	return s, nil
 }
 
+// 压缩
 func (db *DB) Compact() error {
 	return db.db.CompactRange(util.Range{nil, nil})
 }
 
 func init() {
-	driver.Register(Store{})
-	driver.Register(MemStore{})
+	// 注册两个存储驱动
+	driver.Register(Store{}) // 文件存储
+	driver.Register(MemStore{}) // 内存备份存储
 }

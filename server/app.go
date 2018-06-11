@@ -17,12 +17,12 @@ import (
 )
 
 type App struct {
-	cfg *config.Config
+	cfg *config.Config // 配置文件相关
 
-	listener     net.Listener
-	httpListener net.Listener
+	listener     net.Listener // tcp监听
+	httpListener net.Listener // http监听
 
-	ldb *ledis.Ledis
+	ldb *ledis.Ledis // 感觉像是具体的底层数据库驱动的一个代理
 
 	closed bool
 
@@ -31,24 +31,26 @@ type App struct {
 	access *accessLog
 
 	//for slave replication
-	m *master
+	m *master // 主机。 主从复制相关功能
 
-	info *info
+	info *info // 信息。包含主从复制的相关信息
 
-	script *script
+	script *script // lua 脚本
 
-	// handle slaves
+	// handle slaves。 从机相关信息
 	slock        sync.Mutex
 	slaves       map[string]*client
 	slaveSyncAck chan uint64
 
-	snap *snapshotStore
+	snap *snapshotStore // 使用文件快照的方式实现文件备份
 
 	connWait sync.WaitGroup
 
+	// 维护 客户端 信息
 	rcm sync.Mutex
 	rcs map[*respClient]struct{}
 
+	// 数据迁移相关
 	migrateM          sync.Mutex
 	migrateClients    map[string]*goredis.Client
 	migrateKeyLockers map[string]*migrateKeyLocker
@@ -171,6 +173,7 @@ func NewApp(cfg *config.Config) (*App, error) {
 		app.cfg.Readonly = true
 	}
 
+	// 打开底层数据库
 	if app.ldb, err = ledis.Open(cfg); err != nil {
 		return nil, err
 	}
