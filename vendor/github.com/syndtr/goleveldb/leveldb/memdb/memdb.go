@@ -178,23 +178,24 @@ const (
 )
 
 // DB is an in-memory key/value database.
+// 这个结构体感觉像是用数据的方式实现了一个类似跳转表的结构，模拟了链表中节点的概念
 type DB struct {
 	cmp comparer.BasicComparer
 	rnd *rand.Rand
 
 	mu     sync.RWMutex
-	kvData []byte
+	kvData []byte // 记录着所有的key-value值，紧凑排列着
 	// Node data:
 	// [0]         : KV offset
 	// [1]         : Key length
 	// [2]         : Value length
 	// [3]         : Height
-	// [3..height] : Next nodes
-	nodeData  []int
-	prevNode  [tMaxHeight]int
-	maxHeight int
+	// [3..height] : Next nodes nodeData数据的下标
+	nodeData  []int // 节点数据
+	prevNode  [tMaxHeight]int // 前面一个节点
+	maxHeight int // 最大高度
 	n         int
-	kvSize    int
+	kvSize    int // 整个的key-value的所有大小的和
 }
 
 func (p *DB) randHeight() (h int) {

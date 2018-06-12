@@ -19,7 +19,7 @@ import (
 var configFile = flag.String("config", "", "ledisdb config file")
 var addr = flag.String("addr", "", "ledisdb listen address")
 var dataDir = flag.String("data_dir", "", "ledisdb base data dir")
-var dbName = flag.String("db_name", "", "select a db to use, it will overwrite the config's db name")
+var dbName = flag.String("db_name", "memory", "select a db to use, it will overwrite the config's db name")
 var usePprof = flag.Bool("pprof", false, "enable pprof")
 var pprofPort = flag.Int("pprof_port", 6060, "pprof http port")
 var slaveof = flag.String("slaveof", "", "make the server a slave of another instance")

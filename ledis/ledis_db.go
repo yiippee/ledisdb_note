@@ -32,7 +32,7 @@ type DB struct {
 
 	sdb *store.DB
 
-	bucket ibucket
+	bucket ibucket // 水桶
 
 	index int
 

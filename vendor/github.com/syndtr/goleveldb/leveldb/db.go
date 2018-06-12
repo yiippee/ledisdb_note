@@ -179,6 +179,7 @@ func Open(stor storage.Storage, o *opt.Options) (db *DB, err error) {
 		}
 	}()
 
+	// 恢复会话
 	err = s.recover()
 	if err != nil {
 		if !os.IsNotExist(err) || s.o.GetErrorIfMissing() {
@@ -213,6 +214,7 @@ func Open(stor storage.Storage, o *opt.Options) (db *DB, err error) {
 // The DB must be closed after use, by calling Close method.
 // 返回一个DB
 func OpenFile(path string, o *opt.Options) (db *DB, err error) {
+	// 返回一个文件存储驱动
 	stor, err := storage.OpenFile(path, o.GetReadOnly())
 	if err != nil {
 		return

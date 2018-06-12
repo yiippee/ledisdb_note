@@ -72,6 +72,7 @@ func init() {
 
 type internalKey []byte
 
+// 生成内部的key
 func makeInternalKey(dst, ukey []byte, seq uint64, kt keyType) internalKey {
 	if seq > keyMaxSeq {
 		panic("leveldb: invalid sequence number")
@@ -89,11 +90,13 @@ func makeInternalKey(dst, ukey []byte, seq uint64, kt keyType) internalKey {
 	return internalKey(dst)
 }
 
+// 解析内部的key
 func parseInternalKey(ik []byte) (ukey []byte, seq uint64, kt keyType, err error) {
 	if len(ik) < 8 {
 		return nil, 0, 0, newErrInternalKeyCorrupted(ik, "invalid length")
 	}
 	num := binary.LittleEndian.Uint64(ik[len(ik)-8:])
+	// 获取前面7个字节和最后一个字节
 	seq, kt = uint64(num>>8), keyType(num&0xff)
 	if kt > keyTypeVal {
 		return nil, 0, 0, newErrInternalKeyCorrupted(ik, "invalid type")
