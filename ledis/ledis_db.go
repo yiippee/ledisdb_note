@@ -39,7 +39,7 @@ type DB struct {
 	// buffer to store index varint
 	indexVarBuf []byte
 
-	kvBatch   *batch
+	kvBatch   *batch // 批处理
 	listBatch *batch
 	hashBatch *batch
 	zsetBatch *batch

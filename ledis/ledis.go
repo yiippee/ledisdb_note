@@ -16,6 +16,7 @@ import (
 )
 
 // Ledis is the core structure to handle the database.
+// 操作，处理数据库的核心结构
 type Ledis struct {
 	cfg *config.Config
 

@@ -185,7 +185,7 @@ type DB struct {
 
 	mu     sync.RWMutex
 	kvData []byte // 记录着所有的key-value值，紧凑排列着
-	// Node data:
+	// Node data: 记录着 k-v 的元数据
 	// [0]         : KV offset
 	// [1]         : Key length
 	// [2]         : Value length
