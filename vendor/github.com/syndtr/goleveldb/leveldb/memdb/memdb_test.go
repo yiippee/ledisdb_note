@@ -17,7 +17,8 @@ func TestMemdb(t *testing.T) {
 	db := New(c, 2)
 	db.Put([]byte("name"), []byte("lzb"))
 	db.Put([]byte{1, 2, 3}, []byte{4, 5, 6})
-	v, err := db.Get([]byte("name"))
+	db.Put([]byte{8, 8, 8}, []byte{9, 9, 9})
+	v, err := db.Get([]byte{1, 2, 3})
 	if err != nil {
 		fmt.Println(err)
 	}

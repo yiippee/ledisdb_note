@@ -171,9 +171,9 @@ func (i *dbIter) Release() {
 
 const (
 	nKV = iota
-	nKey
-	nVal
-	nHeight
+	nKey // 为1 说明在一个nodeData中从1开始获取键值长度
+	nVal // 同理从2开始，获取value
+	nHeight // 同上。。
 	nNext
 )
 
@@ -184,13 +184,16 @@ type DB struct {
 	rnd *rand.Rand
 
 	mu     sync.RWMutex
-	kvData []byte // 记录着所有的key-value值，紧凑排列着
+	// 记录着所有的key-value值，紧凑排列着。
+	// 通过nodeData来描述kvData里面的内容,同时描述着kvData里面key值的索引
+	kvData []byte
 	// Node data: 记录着 k-v 的元数据
-	// [0]         : KV offset
-	// [1]         : Key length
-	// [2]         : Value length
-	// [3]         : Height
-	// [3..height] : Next nodes nodeData数据的下标
+	// [0]         : KV offset 代表在kvData里面的index，即从0开始的下标偏移量。
+								 // 比如，kvData为：namelzb 123456，0就是第一个键name，然后 7 是第二个键123
+	// [1]         : Key length  // 表示key的长度，name为4个字节。
+	// [2]         : Value length // 表示value的长度，lzb为3个字节。因为有了长度，就可以计算和索引其他键值对的偏移量
+	// [3]         : Height       // 表示该k-v所在的层数
+	// [3..height] : Next nodes  nodeData数据的下标，即上一个k-v在nodeData中的偏移量。这是为了再nodeData中定位该k-v
 	nodeData  []int // 节点数据
 	prevNode  [tMaxHeight]int // 前面一个节点
 	maxHeight int // 最大高度

@@ -38,7 +38,7 @@ type DB struct {
 	// MemDB. 内存数据库
 	memMu           sync.RWMutex
 	memPool         chan *memdb.DB
-	mem, frozenMem  *memDB
+	mem, frozenMem  *memDB // 包含两个db，一个内存db，一个文件db即冰封的持久化的
 	journal         *journal.Writer
 	journalWriter   storage.Writer
 	journalFd       storage.FileDesc
@@ -116,6 +116,7 @@ func openDB(s *session) (*DB, error) {
 
 	if readOnly {
 		// Recover journals (read-only mode).
+		// 回复日志，加载进内存里面。只读模式下
 		if err := db.recoverJournalRO(); err != nil {
 			return nil, err
 		}
@@ -637,6 +638,7 @@ func (db *DB) recoverJournal() error {
 
 func (db *DB) recoverJournalRO() error {
 	// Get all journals and sort it by file number.
+	// 获取所有期刊日志并按文件编号排序
 	rawFds, err := db.s.stor.List(storage.TypeJournal)
 	if err != nil {
 		return err
@@ -762,8 +764,8 @@ func (db *DB) get(auxm *memdb.DB, auxt tFiles, key []byte, seq uint64, ro *opt.R
 		}
 	}
 
-	em, fm := db.getMems()
-	for _, m := range [...]*memDB{em, fm} {
+	em, fm := db.getMems() // 获取了两个db，一个是内存db，一个是文件db
+	for _, m := range [...]*memDB{em, fm} { // 先从em内存db获取，如果没获取到再从fm中
 		if m == nil {
 			continue
 		}
